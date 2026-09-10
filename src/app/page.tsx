@@ -1,69 +1,35 @@
-import Image from "next/image";
+import { Sidebar } from "@/components/Sidebar";
+import { TaskList } from "@/components/TaskList";
+import { getDashboardStats } from "@/lib/services/dashboard";
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+const activities = [
+  ["09:42", "Updated the implementation timeline with delivery dependencies."],
+  ["Yesterday", "Added a blocker to the Q3 reporting data task."],
+  ["Yesterday", "Marked partner onboarding notes as in progress."],
+];
+
+const workstreams = [["Programme support", 78], ["Operations", 54], ["Reporting", 42]];
+
+export default async function Home() {
+  let stats = { total: 12, inProgress: 5, blocked: 2, completed: 8 };
+  try {
+    stats = await getDashboardStats();
+  } catch {
+    // Render the dashboard before a local database is configured.
+  }
+
+  return <div className="dashboard-shell"><Sidebar /><main className="main-content">
+    <header className="topbar"><div><div className="eyebrow">Wednesday, 09 September 2026</div><h2>Good morning, Gideon</h2><div className="date-label">Here is the shape of your work today.</div></div><div className="user-chip"><div className="avatar">GO</div><span>Gideon O.</span><button className="button-primary">+ New task</button></div></header>
+    <section className="stats-grid" aria-label="Work summary">
+      <div className="stat-card"><div className="stat-label">Open tasks</div><div className="stat-value">{stats.total - stats.completed}</div><div className="stat-note">Across 4 projects</div></div>
+      <div className="stat-card"><div className="stat-label">In progress</div><div className="stat-value">{stats.inProgress}</div><div className="stat-note">Keep the momentum</div></div>
+      <div className="stat-card"><div className="stat-label">Blocked</div><div className="stat-value">{stats.blocked}</div><div className="stat-note" style={{ color: "var(--red)" }}>Needs attention</div></div>
+      <div className="stat-card"><div className="stat-label">Completed this month</div><div className="stat-value">{stats.completed}</div><div className="stat-note">+18% from last month</div></div>
+    </section>
+    <div className="dashboard-grid"><div className="panel"><div className="panel-heading"><div className="panel-title">Active work</div><a className="panel-link" href="#">View all tasks →</a></div><TaskList /></div>
+      <div className="panel"><div className="panel-heading"><div className="panel-title">Recent activity</div><a className="panel-link" href="#">Activity log →</a></div>{activities.map(([time, text]) => <div className="activity-item" key={time + text}><div className="activity-time">{time}</div><div className="activity-text">{text}</div></div>)}</div>
+      <div className="panel"><div className="panel-heading"><div className="panel-title">Workstream pulse</div><span className="date-label">This month</span></div>{workstreams.map(([name, value]) => <div className="workstream-row" key={name}><div className="workstream-head"><span>{name}</span><span>{value}%</span></div><div className="progress-track"><div className="progress-bar" style={{ width: `${value}%` }} /></div></div>)}</div>
+      <div className="panel"><div className="panel-heading"><div className="panel-title">Next action</div></div><div style={{ color: "var(--ink-muted)", fontSize: 12, lineHeight: 1.6 }}>Turn today&apos;s evidence into tomorrow&apos;s clarity.</div><div style={{ fontSize: 14, fontWeight: 600, marginTop: 16 }}>Follow up with the reporting team on the data gap.</div><div style={{ color: "var(--green)", fontSize: 11, fontWeight: 600, marginTop: 18 }}>Due today · Programme Reporting</div></div>
     </div>
-  );
+  </main></div>;
 }
