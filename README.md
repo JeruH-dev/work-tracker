@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Work Tracker is a personal work-management MVP built with Next.js, PostgreSQL, and Prisma.
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies with `npm install`.
+2. Copy `.env.example` to `.env` and provide a PostgreSQL `DATABASE_URL` plus a random `SESSION_SECRET` of at least 32 characters.
+3. Apply the Prisma schema to your development database with `npx prisma db push`.
+4. Generate Prisma Client with `npx prisma generate`.
+5. Optionally seed the sample data with `npx prisma db seed` after configuring a Prisma seed command for your environment.
+
+Then run the development server:
 
 ```bash
 npm run dev
@@ -16,7 +22,18 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000), create an account, and sign in. Sessions are signed, HTTP-only cookies; passwords are hashed with Node's scrypt implementation and are never returned to the browser.
+
+## API
+
+All task, project, and dashboard endpoints require an authenticated session.
+
+- `POST /api/auth/register`, `POST /api/auth/sign-in`, `POST /api/auth/sign-out`, `GET /api/auth/session`
+- `GET|POST /api/tasks`, `GET|PATCH|DELETE /api/tasks/:id`
+- `GET|POST /api/projects`, `GET|PATCH|DELETE /api/projects/:id`
+- `GET /api/dashboard`
+
+Task and project ownership is derived from the authenticated user on the server. Clients do not submit `ownerId` or `assigneeId`.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 

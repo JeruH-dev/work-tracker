@@ -39,12 +39,13 @@ enum Workstream {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  name      String
-  email     String     @unique
-  createdAt DateTime   @default(now())
-  projects  Project[]
-  tasks     Task[]
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  passwordHash String
+  createdAt    DateTime   @default(now())
+  projects     Project[]
+  tasks        Task[]
   activities Activity[]
 }
 

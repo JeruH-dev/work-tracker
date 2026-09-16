@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server";
 import { createProject, listProjects } from "@/lib/services/projects";
+import { apiError, requireApiUser, unauthorized } from "@/lib/api";
 
 export async function GET() {
-  return NextResponse.json(await listProjects());
+  const user = await requireApiUser();
+  if (!user) return unauthorized();
+  return NextResponse.json(await listProjects(user.id));
 }
 
 export async function POST(request: Request) {
   try {
-    const project = await createProject(await request.json());
+    const user = await requireApiUser();
+    if (!user) return unauthorized();
+    const project = await createProject(user.id, await request.json());
     return NextResponse.json(project, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid project" }, { status: 400 });
+    return apiError(error);
   }
 }

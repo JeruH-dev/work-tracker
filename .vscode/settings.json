@@ -1,0 +1,10 @@
+{
+    "files.autoSave": "afterDelay",
+    "editor.defaultFormatter": "hb432.prettier-eslint-typescript",
+    "editor.wordWrap": "on",
+    "editor.mouseWheelZoom": true,
+    "workbench.iconTheme": "vs-seti",
+    "workbench.preferredHighContrastColorTheme": "Tomorrow Night Blue",
+    "workbench.preferredHighContrastLightColorTheme": "Tomorrow Night Blue",
+    "editor.fontFamily": "Consolas, 'Courier New', monospace, 'poppins'"
+}

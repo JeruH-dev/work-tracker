@@ -1,10 +1,10 @@
-import { definePrismaConfig } from "prisma/config";
+import { loadEnvFile } from "node:process";
+import { defineConfig, env } from "prisma/config";
 
-export default definePrismaConfig({
+loadEnvFile();
+
+export default defineConfig({
   datasource: {
-    url: process.env.DATABASE_URL,
-  },
-  skills: {
-    agents: ["claude", "cursor", "agents", "devin"],
+    url: env("DATABASE_URL"),
   },
 });

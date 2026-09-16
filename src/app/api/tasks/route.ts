@@ -1,15 +1,20 @@
 import { NextResponse } from "next/server";
 import { createTask, listTasks } from "@/lib/services/tasks";
+import { apiError, requireApiUser, unauthorized } from "@/lib/api";
 
 export async function GET() {
-  return NextResponse.json(await listTasks());
+  const user = await requireApiUser();
+  if (!user) return unauthorized();
+  return NextResponse.json(await listTasks(user.id));
 }
 
 export async function POST(request: Request) {
   try {
-    const task = await createTask(await request.json());
+    const user = await requireApiUser();
+    if (!user) return unauthorized();
+    const task = await createTask(user.id, await request.json());
     return NextResponse.json(task, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Invalid task" }, { status: 400 });
+    return apiError(error);
   }
 }

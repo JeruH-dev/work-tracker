@@ -9,8 +9,7 @@ export const taskInputSchema = z.object({
   outcome: z.string().trim().max(2000).optional(),
   nextAction: z.string().trim().max(1000).optional(),
   blocker: z.string().trim().max(1000).optional(),
-  projectId: z.string().cuid().optional(),
-  assigneeId: z.string().cuid(),
+  projectId: z.string().cuid().nullable().optional(),
 });
 
 export const projectInputSchema = z.object({
@@ -18,7 +17,17 @@ export const projectInputSchema = z.object({
   description: z.string().trim().max(2000).optional(),
   status: z.enum(["PLANNING", "ACTIVE", "ON_HOLD", "COMPLETED", "ARCHIVED"]).default("PLANNING"),
   workstream: z.enum(["PROGRAMME_SUPPORT", "OPERATIONS", "REPORTING", "PARTNERSHIPS", "PROFESSIONAL_DEVELOPMENT", "OTHER"]),
-  ownerId: z.string().cuid(),
+});
+
+export const signUpSchema = z.object({
+  name: z.string().trim().min(2).max(80),
+  email: z.email().trim().toLowerCase(),
+  password: z.string().min(12).max(128),
+});
+
+export const signInSchema = z.object({
+  email: z.email().trim().toLowerCase(),
+  password: z.string().min(1).max(128),
 });
 
 export type TaskInput = z.infer<typeof taskInputSchema>;
