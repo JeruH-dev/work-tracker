@@ -4,6 +4,79 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+function PasswordField({
+  name,
+  autoComplete,
+  minLength,
+  label,
+}: {
+  name: string;
+  autoComplete: string;
+  minLength?: number;
+  label: string;
+}) {
+  const [visible, setVisible] = useState(false);
+
+  return (
+    <label>
+      {label}
+
+      <span className="password-input-wrap">
+        <input
+          name={name}
+          type={visible ? "text" : "password"}
+          autoComplete={autoComplete}
+          minLength={minLength}
+          required
+        />
+
+        <button
+          aria-label={
+            visible
+              ? `Hide ${label.toLowerCase()}`
+              : `Show ${label.toLowerCase()}`
+          }
+          aria-pressed={visible}
+          className="password-visibility"
+          onClick={() => setVisible((current) => !current)}
+          type="button"
+        >
+          {visible ? (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 3l18 18" />
+              <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83" />
+              <path d="M9.88 5.09A10.94 10.94 0 0 1 12 4.88c5.05 0 8.63 3.12 10 7.12a10.98 10.98 0 0 1-2.16 3.49" />
+              <path d="M6.61 6.61C4.62 7.9 3.24 9.72 2 12c1.37 4 4.95 7.12 10 7.12a10.94 10.94 0 0 0 4.12-.8" />
+            </svg>
+          ) : (
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="2.8" />
+            </svg>
+          )}
+        </button>
+      </span>
+    </label>
+  );
+}
+
+
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -71,22 +144,15 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         <input name="email" type="email" autoComplete="email" required />
       </label>
 
-      <label>
-        Password
-        <input
-          name="password"
-          type="password"
-          autoComplete={isSignUp ? "new-password" : "current-password"}
-          minLength={isSignUp ? 8 : undefined}
-          required
-        />
-      </label>
+      <PasswordField
+        autoComplete={isSignUp ? "new-password" : "current-password"}
+        label="Password"
+        minLength={isSignUp ? 8 : undefined}
+        name="password"
+      />
 
       {isSignUp && (
-        <label>
-          Confirm password
-          <input name="confirmPassword" type="password" autoComplete="new-password" minLength={8} required />
-        </label>
+        <PasswordField autoComplete="new-password" label="Confirm password" minLength={8} name="confirmPassword" />
       )}
 
       {error && <p className="form-error" role="alert">{error}</p>}
