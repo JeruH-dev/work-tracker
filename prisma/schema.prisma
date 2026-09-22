@@ -32,9 +32,26 @@ model Project {
   updatedAt   DateTime      @updatedAt
   owner       User          @relation(fields: [ownerId], references: [id])
   tasks       Task[]
+  milestones  Milestone[]
 
   @@index([status])
   @@index([workstream])
+}
+
+model Milestone {
+  id          String          @id @default(cuid())
+  title       String
+  description String?
+  dueDate     DateTime?
+  status      MilestoneStatus @default(PLANNED)
+  projectId   String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  project     Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@index([dueDate])
+  @@index([status])
 }
 
 model Task {
@@ -49,16 +66,61 @@ model Task {
   nextAction  String?
   blocker     String?
   projectId   String?
+  recurrenceRule RecurrenceRule @default(NONE)
+  recurrenceEndDate DateTime?
   assigneeId  String
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   activities  Activity[]
+  timeEntries TimeEntry[]
+  reminders   Reminder[]
+  dependencies TaskDependency[] @relation("TaskDependencies")
+  dependentTasks TaskDependency[] @relation("TaskReverseDependencies")
   assignee    User       @relation(fields: [assigneeId], references: [id])
   project     Project?   @relation(fields: [projectId], references: [id])
 
   @@index([status])
   @@index([dueDate])
   @@index([projectId])
+}
+
+model Reminder {
+  id          String   @id @default(cuid())
+  taskId      String
+  message     String
+  scheduledFor DateTime
+  sentAt      DateTime?
+  createdAt   DateTime @default(now())
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([scheduledFor])
+}
+
+model TaskDependency {
+  id                String   @id @default(cuid())
+  taskId            String
+  dependencyTaskId  String
+  createdAt         DateTime @default(now())
+  task              Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  dependencyTask    Task     @relation("TaskReverseDependencies", fields: [dependencyTaskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, dependencyTaskId])
+  @@index([taskId])
+  @@index([dependencyTaskId])
+}
+
+model TimeEntry {
+  id              String   @id @default(cuid())
+  durationMinutes Int
+  note            String?
+  occurredAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  taskId          String
+  task            Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([occurredAt])
 }
 
 model Activity {
@@ -112,12 +174,25 @@ enum TaskStatus {
   COMPLETED
 }
 
+enum RecurrenceRule {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
 enum ProjectStatus {
   PLANNING
   ACTIVE
   ON_HOLD
   COMPLETED
   ARCHIVED
+}
+
+enum MilestoneStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
 }
 
 enum Workstream {
