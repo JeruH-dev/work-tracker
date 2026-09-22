@@ -1,5 +1,7 @@
-import { ZodError } from "zod";
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
+
+import { AuthServiceError, createAuthError } from "@/lib/auth-errors";
 import { getCurrentUser } from "@/lib/auth";
 
 export async function requireApiUser() {
@@ -10,6 +12,15 @@ export async function requireApiUser() {
 
 export function apiError(error: unknown) {
   if (error instanceof ZodError) return NextResponse.json({ error: "Invalid request", details: error.issues }, { status: 400 });
+  if (error instanceof AuthServiceError) {
+    return NextResponse.json(createAuthError(error.code, error.message), { status: error.statusCode });
+  }
+  if (error instanceof Error && /verification email|email verification/i.test(error.message)) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 503 },
+    );
+  }
   if (error instanceof Error && error.message === "Project not found") return NextResponse.json({ error: error.message }, { status: 404 });
   if (
     error instanceof Error &&

@@ -3,7 +3,7 @@ Work Tracker is a personal work-management MVP built with Next.js, PostgreSQL, a
 ## Getting Started
 
 1. Install dependencies with `npm install`.
-2. Copy `.env.example` to `.env` and provide a PostgreSQL `DATABASE_URL` plus a random `SESSION_SECRET` of at least 32 characters.
+2. Copy `.env.example` to `.env` and provide a PostgreSQL `DATABASE_URL`, a random `SESSION_SECRET` of at least 32 characters, and valid Resend email settings (`RESEND_API_KEY` and `EMAIL_FROM`). Verification emails are sent through Resend.
 3. Apply the Prisma schema to your development database with `npx prisma db push`.
 4. Generate Prisma Client with `npx prisma generate`.
 5. Optionally seed the sample data with `npx prisma db seed` after configuring a Prisma seed command for your environment.
