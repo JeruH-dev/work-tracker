@@ -1,4 +1,5 @@
 import { Sidebar } from "@/components/Sidebar";
+import { PrintReportButton } from "@/components/PrintReportButton";
 import { TrendSignals } from "@/components/TrendSignals";
 import { getCurrentUser } from "@/lib/auth";
 import { getWorkReport, type ReportPeriod } from "@/lib/services/reports";
@@ -58,7 +59,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
           </div>
           <div className="report-header-actions"><nav className="report-period-tabs" aria-label="Report period">
             {(Object.entries(periodLabels) as [ReportPeriod, string][]).map(([value, label]) => <a className={`report-period-tab${period === value ? " is-active" : ""}`} href={`/reports?period=${value}`} key={value}>{label}</a>)}
-          </nav><a className="report-export-button" href={`/api/reports/export?period=${period}`} download>Export CSV</a></div>
+          </nav><a className="report-export-button" href={`/api/reports/export?period=${period}`} download>Export CSV</a><PrintReportButton /></div>
         </header>
 
         <section className="report-metric-grid" aria-label="Weekly totals">

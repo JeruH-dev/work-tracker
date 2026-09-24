@@ -48,10 +48,13 @@
  .report-header-actions { align-items: center; display: flex; gap: 9px; }
  .report-export-button { border: 1px solid var(--green); border-radius: 5px; color: var(--green); font-size: 11px; font-weight: 700; padding: 8px 11px; }
  .report-export-button:hover { background: var(--green-soft); }
+ .report-print-button { background: var(--green); border: 1px solid var(--green); border-radius: 5px; color: white; cursor: pointer; font: inherit; font-size: 11px; font-weight: 700; padding: 8px 11px; }
+ .report-print-button:hover { background: #15533c; }
  .report-period-tab { border-radius: 5px; color: var(--ink-muted); font-size: 11px; font-weight: 700; padding: 8px 11px; }
  .report-period-tab:hover { color: var(--green); }
  .report-period-tab.is-active { background: var(--panel); box-shadow: 0 1px 3px rgba(23, 56, 45, .12); color: var(--green); }
  @media (max-width: 560px) { .report-header-actions { align-items: stretch; flex-direction: column; width: 100%; } .report-period-tabs { width: 100%; } .report-period-tab { flex: 1; text-align: center; } .report-export-button { text-align: center; } }
+ @media print { @page { margin: 16mm; } body { background: white; } .sidebar, .mobile-menu-toggle, .sidebar-overlay, .report-header-actions, .trend-view-switch, .trend-chart-controls, .report-period-tabs { display: none !important; } .main-content { height: auto; margin: 0; max-width: none; overflow: visible; padding: 0; width: 100%; } .topbar { margin-bottom: 20px; } .report-metric-grid { break-inside: avoid; } .report-metric { background: white; border: 1px solid #cbd8ce; color: var(--foreground); } .report-metric span, .report-metric small { color: var(--ink-muted); } .report-metric-alert strong { color: var(--red); } .report-layout, .report-workstream-panel, .report-trend-panel, .project-panel { break-inside: avoid; } .panel, .stat-card { box-shadow: none; } }
  .report-trend-panel { margin-top: 24px; }
  .report-trend-grid { display: grid; gap: 1px; grid-template-columns: repeat(5, 1fr); overflow: hidden; }
  .report-trend-item { background: #f7faf7; border: 1px solid #e7eee8; display: grid; gap: 8px; padding: 14px; }

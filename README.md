@@ -66,6 +66,12 @@ This makes the application useful not only as a task manager, but also as a ligh
 - [x] Dashboard API
 - [x] Server-side ownership enforcement
 - [x] Environment-based configuration
+- [x] Daily, weekly, and monthly reports
+- [x] Completion-rate and workload analytics
+- [x] Project progress and overdue-task analytics
+- [x] Trend comparison charts
+- [x] CSV report export
+- [x] Print/PDF-ready reports
 
 ### In active development
 
@@ -85,9 +91,7 @@ This makes the application useful not only as a task manager, but also as a ligh
 - [ ] Recurring tasks
 - [ ] Time tracking
 - [ ] Notifications
-- [ ] Daily/weekly/monthly reports
-- [ ] Analytics
-- [ ] Export to PDF/Excel
+- [ ] Excel report export
 - [ ] AI-assisted productivity
 - [ ] Production deployment
 
@@ -140,16 +144,18 @@ Planned features:
 
 **Goal:** Turn recorded work into useful information.
 
-Planned features:
+Delivered features:
 
-- Daily activity reports
-- Weekly work summaries
-- Monthly reports
-- Project progress reports
-- Completion-rate analytics
-- Workload analytics
-- Overdue-task trends
-- PDF/Excel exports
+- Daily, weekly, and monthly report views at `/reports`
+- Project progress and overdue-task reporting
+- Completion-rate and workstream workload analytics
+- Previous-period trend signals with selectable 2D line charts
+- CSV export for the selected report period
+- Print/PDF-ready report layout
+
+Remaining planned work:
+
+- Excel exports
 
 **Target:** `v0.3.x`
 
