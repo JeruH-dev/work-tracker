@@ -121,3 +121,37 @@ export async function getWorkReport(userId: string, period: ReportPeriod = "week
 export async function getWeeklyReport(userId: string, now = new Date()) {
   return getWorkReport(userId, "week", now);
 }
+
+function csvCell(value: string | number | Date | null | undefined) {
+  const text = value instanceof Date ? value.toISOString() : String(value ?? "");
+  return `"${text.replaceAll('"', '""')}"`;
+}
+
+export async function getReportCsv(userId: string, period: ReportPeriod = "week", now = new Date()) {
+  const report = await getWorkReport(userId, period, now);
+  const [tasks, activities, timeEntries] = await Promise.all([
+    prisma.task.findMany({
+      where: { assigneeId: userId },
+      select: { taskRef: true, title: true, status: true, priority: true, dueDate: true, project: { select: { name: true } } },
+      orderBy: { updatedAt: "desc" },
+    }),
+    prisma.activity.findMany({
+      where: { authorId: userId, occurredAt: { gte: report.periodStart, lt: new Date(report.periodEnd.getTime() + 86400000) } },
+      select: { occurredAt: true, note: true, task: { select: { taskRef: true, title: true } } },
+      orderBy: { occurredAt: "asc" },
+    }),
+    prisma.timeEntry.findMany({
+      where: { task: { assigneeId: userId }, occurredAt: { gte: report.periodStart, lt: new Date(report.periodEnd.getTime() + 86400000) } },
+      select: { occurredAt: true, durationMinutes: true, note: true, task: { select: { taskRef: true, title: true } } },
+      orderBy: { occurredAt: "asc" },
+    }),
+  ]);
+
+  const lines = [
+    ["Section", "Reference", "Title", "Status", "Priority", "Project", "Date", "Duration minutes", "Note"].map(csvCell).join(","),
+    ...tasks.map((task) => ["Task", task.taskRef, task.title, task.status, task.priority, task.project?.name, task.dueDate].map(csvCell).join(",")),
+    ...activities.map((activity) => ["Activity", activity.task?.taskRef, activity.task?.title, "RECORDED", "", "", activity.occurredAt, "", activity.note].map(csvCell).join(",")),
+    ...timeEntries.map((entry) => ["Time entry", entry.task.taskRef, entry.task.title, "RECORDED", "", "", entry.occurredAt, entry.durationMinutes, entry.note].map(csvCell).join(",")),
+  ];
+  return lines.join("\n");
+}

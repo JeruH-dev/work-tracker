@@ -24,6 +24,13 @@
  .report-project-stats { color: var(--ink-muted); display: flex; font-size: 10px; gap: 12px; }
  .report-project-stats span { white-space: nowrap; }
  .report-project-stats .project-risk { color: var(--red); font-weight: 700; }
+ .report-workstream-panel { margin-top: 24px; }
+ .report-workstream-list { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .report-workstream-row { display: grid; gap: 8px; }
+ .report-workstream-heading, .report-workstream-meta { display: flex; font-size: 11px; justify-content: space-between; }
+ .report-workstream-heading strong, .report-workstream-meta { color: var(--ink-muted); font-size: 10px; }
+ .report-workstream-meta { gap: 12px; justify-content: flex-start; }
+ @media (max-width: 560px) { .report-workstream-panel { margin-top: 16px; } .report-workstream-list { grid-template-columns: 1fr; } }
  .report-completed-row { align-items: flex-start; border-top: 1px solid #edf1ee; display: flex; gap: 10px; padding-top: 12px; }
  .report-completed-row:first-child { border-top: 0; padding-top: 0; }
  .report-check { align-items: center; background: var(--green-soft); border-radius: 50%; color: var(--green); display: flex; flex: 0 0 20px; font-size: 12px; height: 20px; justify-content: center; }
@@ -38,10 +45,13 @@
  @media (max-width: 900px) { .report-metric-grid { grid-template-columns: repeat(2, 1fr); } }
  @media (max-width: 560px) { .report-topbar { align-items: flex-start; } .report-period-badge { align-self: flex-start; } .report-metric-grid, .report-layout { grid-template-columns: 1fr; } .report-layout-bottom { margin-top: 16px; } .report-metric { padding: 15px; } }
  .report-period-tabs { background: #edf2ee; border: 1px solid var(--line); border-radius: 7px; display: flex; gap: 3px; padding: 3px; }
+ .report-header-actions { align-items: center; display: flex; gap: 9px; }
+ .report-export-button { border: 1px solid var(--green); border-radius: 5px; color: var(--green); font-size: 11px; font-weight: 700; padding: 8px 11px; }
+ .report-export-button:hover { background: var(--green-soft); }
  .report-period-tab { border-radius: 5px; color: var(--ink-muted); font-size: 11px; font-weight: 700; padding: 8px 11px; }
  .report-period-tab:hover { color: var(--green); }
  .report-period-tab.is-active { background: var(--panel); box-shadow: 0 1px 3px rgba(23, 56, 45, .12); color: var(--green); }
- @media (max-width: 560px) { .report-period-tabs { width: 100%; } .report-period-tab { flex: 1; text-align: center; } }
+ @media (max-width: 560px) { .report-header-actions { align-items: stretch; flex-direction: column; width: 100%; } .report-period-tabs { width: 100%; } .report-period-tab { flex: 1; text-align: center; } .report-export-button { text-align: center; } }
  .report-trend-panel { margin-top: 24px; }
  .report-trend-grid { display: grid; gap: 1px; grid-template-columns: repeat(5, 1fr); overflow: hidden; }
  .report-trend-item { background: #f7faf7; border: 1px solid #e7eee8; display: grid; gap: 8px; padding: 14px; }

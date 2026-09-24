@@ -22,6 +22,15 @@ const statusLabels: Record<string, string> = {
   COMPLETED: "Completed",
 };
 
+const workstreamLabels: Record<string, string> = {
+  PROGRAMME_SUPPORT: "Programme support",
+  OPERATIONS: "Operations",
+  REPORTING: "Reporting",
+  PARTNERSHIPS: "Partnerships",
+  PROFESSIONAL_DEVELOPMENT: "Professional development",
+  OTHER: "Other",
+};
+
 type ReportsPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>> | Record<string, string | string[] | undefined>;
 };
@@ -47,9 +56,9 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             <h2>{periodLabel} work report</h2>
             <div className="date-label">{formatDate(report.periodStart)} - {formatDate(report.periodEnd)} · A clear view of what moved this {period === "day" ? "day" : period}.</div>
           </div>
-          <nav className="report-period-tabs" aria-label="Report period">
+          <div className="report-header-actions"><nav className="report-period-tabs" aria-label="Report period">
             {(Object.entries(periodLabels) as [ReportPeriod, string][]).map(([value, label]) => <a className={`report-period-tab${period === value ? " is-active" : ""}`} href={`/reports?period=${value}`} key={value}>{label}</a>)}
-          </nav>
+          </nav><a className="report-export-button" href={`/api/reports/export?period=${period}`} download>Export CSV</a></div>
         </header>
 
         <section className="report-metric-grid" aria-label="Weekly totals">
@@ -76,6 +85,11 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
             {report.projects.length ? <div className="report-project-list">{report.projects.map((project) => <div className="report-project-row" key={project.id}><div className="report-project-heading"><span>{project.name}</span><small>{project.completionRate}% complete</small></div><div className="report-progress-track"><div className="report-progress-bar" style={{ width: `${project.completionRate}%` }} /></div><div className="report-project-stats"><span>{project.completedTasks}/{project._count.tasks} done</span><span className={project.blockedTasks ? "project-risk" : ""}>{project.blockedTasks} blocked</span><span className={project.overdueTasks ? "project-risk" : ""}>{project.overdueTasks} overdue</span></div></div>)}</div> : <p className="empty-state">Projects will appear here as you create them.</p>}
           </section>
         </div>
+
+        <section className="panel report-panel report-workstream-panel">
+          <div className="panel-heading"><div><div className="panel-title">Workstream workload</div><div className="report-subtitle">Where your current task volume is concentrated</div></div></div>
+          {Object.keys(report.workstreams).length ? <div className="report-workstream-list">{Object.entries(report.workstreams).sort(([, first], [, second]) => second.taskCount - first.taskCount).map(([workstream, summary]) => { const maximum = Math.max(...Object.values(report.workstreams).map((item) => item.taskCount), 1); return <div className="report-workstream-row" key={workstream}><div className="report-workstream-heading"><span>{workstreamLabels[workstream] ?? workstream.replaceAll("_", " ")}</span><strong>{summary.taskCount} tasks</strong></div><div className="report-progress-track"><div className="report-progress-bar" style={{ width: `${(summary.taskCount / maximum) * 100}%` }} /></div><div className="report-workstream-meta"><span>{summary.completedTasks} completed</span><span className={summary.blockedTasks ? "project-risk" : ""}>{summary.blockedTasks} blocked</span></div></div>; })}</div> : <p className="empty-state">Assign tasks to projects to see workload by workstream.</p>}
+        </section>
 
         <TrendSignals periodLabel={periodLabel} completedTasks={report.totals.completedTasks} activityCount={report.totals.activityCount} trackedMinutes={report.totals.trackedMinutes} overdueTasks={report.totals.overdueTasks} previousCompletedTasks={report.comparison.previousCompletedTasks} previousActivities={report.comparison.previousActivities} previousTrackedMinutes={report.comparison.previousTrackedMinutes} previousOverdueTasks={report.comparison.previousOverdueTasks} completedTasksDelta={report.comparison.completedTasksDelta} activityCountDelta={report.comparison.activityCountDelta} trackedMinutesDelta={report.comparison.trackedMinutesDelta} overdueTasksDelta={report.comparison.overdueTasksDelta} completionRateDelta={report.comparison.completionRateDelta} />
 
