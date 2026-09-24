@@ -1,3 +1,84 @@
+ .report-topbar { align-items: center; }
+ .report-period-badge { background: var(--green-soft); border: 1px solid #cce5d4; border-radius: 99px; color: var(--green); font-size: 11px; font-weight: 700; padding: 8px 12px; }
+ .report-metric-grid { display: grid; gap: 13px; grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
+ .report-metric { background: #17382d; border: 1px solid #295943; border-radius: 7px; color: white; padding: 18px 20px; }
+ .report-metric span, .report-metric small { color: #a9c7b5; display: block; font-size: 11px; }
+ .report-metric strong { display: block; font-size: 28px; letter-spacing: -.04em; margin: 10px 0 4px; }
+ .report-metric-alert strong { color: #f1c578; }
+ .report-layout { display: grid; gap: 24px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+ .report-layout-bottom { margin-top: 24px; }
+ .report-panel { min-width: 0; }
+ .report-subtitle { color: var(--ink-muted); font-size: 11px; margin-top: 5px; }
+ .report-status-list, .report-project-list, .report-completed-list, .report-activity-list { display: grid; gap: 15px; }
+ .report-status-row { display: grid; gap: 8px; }
+ .report-status-label, .report-project-heading { display: flex; font-size: 12px; justify-content: space-between; }
+ .report-status-label strong, .report-project-heading small { color: var(--ink-muted); font-size: 11px; }
+ .report-progress-track { background: #edf2ee; border-radius: 99px; height: 7px; overflow: hidden; }
+ .report-progress-bar { background: var(--green); border-radius: inherit; height: 100%; transition: width .3s ease; }
+ .report-progress-backlog { background: #aebbb2; }
+ .report-progress-in_progress { background: #5caa7d; }
+ .report-progress-blocked { background: #d1766d; }
+ .report-progress-in_review { background: #d8a34d; }
+ .report-progress-completed { background: #7395a8; }
+ .report-project-row { display: grid; gap: 8px; }
+ .report-completed-row { align-items: flex-start; border-top: 1px solid #edf1ee; display: flex; gap: 10px; padding-top: 12px; }
+ .report-completed-row:first-child { border-top: 0; padding-top: 0; }
+ .report-check { align-items: center; background: var(--green-soft); border-radius: 50%; color: var(--green); display: flex; flex: 0 0 20px; font-size: 12px; height: 20px; justify-content: center; }
+ .report-completed-row div { display: grid; gap: 4px; min-width: 0; }
+ .report-completed-row strong { font-size: 12px; }
+ .report-completed-row small, .report-completed-row time { color: var(--ink-muted); font-size: 10px; }
+ .report-completed-row time { margin-left: auto; white-space: nowrap; }
+ .report-count { align-items: center; background: var(--green-soft); border-radius: 99px; color: var(--green); display: flex; font-size: 11px; font-weight: 700; height: 25px; justify-content: center; min-width: 25px; }
+ .report-activity-row { border-left: 2px solid #c9d9ce; display: grid; gap: 4px; padding-left: 12px; }
+ .report-activity-row time, .report-activity-row small { color: var(--ink-muted); font-size: 10px; }
+ .report-activity-row p { font-size: 12px; line-height: 1.45; margin: 0; }
+ @media (max-width: 900px) { .report-metric-grid { grid-template-columns: repeat(2, 1fr); } }
+ @media (max-width: 560px) { .report-topbar { align-items: flex-start; } .report-period-badge { align-self: flex-start; } .report-metric-grid, .report-layout { grid-template-columns: 1fr; } .report-layout-bottom { margin-top: 16px; } .report-metric { padding: 15px; } }
+ .report-period-tabs { background: #edf2ee; border: 1px solid var(--line); border-radius: 7px; display: flex; gap: 3px; padding: 3px; }
+ .report-period-tab { border-radius: 5px; color: var(--ink-muted); font-size: 11px; font-weight: 700; padding: 8px 11px; }
+ .report-period-tab:hover { color: var(--green); }
+ .report-period-tab.is-active { background: var(--panel); box-shadow: 0 1px 3px rgba(23, 56, 45, .12); color: var(--green); }
+ @media (max-width: 560px) { .report-period-tabs { width: 100%; } .report-period-tab { flex: 1; text-align: center; } }
+ .report-trend-panel { margin-top: 24px; }
+ .report-trend-grid { display: grid; gap: 1px; grid-template-columns: repeat(5, 1fr); overflow: hidden; }
+ .report-trend-item { background: #f7faf7; border: 1px solid #e7eee8; display: grid; gap: 8px; padding: 14px; }
+ .report-trend-item span { color: var(--ink-muted); font-size: 11px; }
+ .report-trend-item strong { font-size: 18px; letter-spacing: -.03em; }
+ .trend-positive { color: var(--green); }
+ .trend-negative { color: var(--red); }
+ @media (max-width: 560px) { .report-trend-panel { margin-top: 16px; } .report-trend-grid { grid-template-columns: repeat(2, 1fr); } }
+ .trend-heading { gap: 16px; }
+ .trend-view-switch { background: #edf2ee; border: 1px solid var(--line); border-radius: 6px; display: flex; gap: 3px; padding: 3px; }
+ .trend-view-switch button { background: transparent; border: 0; border-radius: 4px; color: var(--ink-muted); cursor: pointer; font: inherit; font-size: 10px; font-weight: 700; padding: 7px 9px; }
+ .trend-view-switch button:hover, .trend-view-switch button:focus-visible { color: var(--green); }
+ .trend-view-switch button:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+ .trend-view-switch button.is-active { background: var(--panel); box-shadow: 0 1px 3px rgba(23, 56, 45, .12); color: var(--green); }
+ .trend-chart-view { border-top: 1px solid var(--line); padding-top: 18px; }
+ .trend-line-chart { background: #f7faf7; border: 1px solid #e7eee8; border-radius: 6px; padding: 12px 14px 10px; }
+ .trend-line-chart svg { display: block; height: auto; max-width: 100%; width: 100%; }
+ .trend-axis { stroke: #aebbb2; stroke-width: 1; }
+ .trend-gridline { stroke: #dfe8e1; stroke-dasharray: 3 4; stroke-width: 1; }
+ .trend-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: 3; }
+ .trend-line-current { stroke: var(--green); }
+ .trend-line-previous { stroke: #aebbb2; stroke-dasharray: 5 5; }
+ .trend-point { stroke: var(--panel); stroke-width: 2; }
+ .trend-point-current { fill: var(--green); }
+ .trend-point-previous { fill: #aebbb2; }
+ .trend-axis-label { fill: var(--ink-muted); font-size: 10px; }
+ .trend-chart-note { color: var(--ink-muted); font-size: 10px; line-height: 1.4; margin-top: 8px; }
+ @media (max-width: 560px) { .trend-heading { align-items: flex-start; flex-direction: column; } .trend-view-switch { width: 100%; } .trend-view-switch button { flex: 1; } }
+ .report-loading { animation: report-loading-in .2s ease-out; }
+ .report-skeleton-heading { display: flex; justify-content: space-between; margin-bottom: 33px; }
+ .report-skeleton-heading span:first-child { background: #dbe6de; border-radius: 5px; height: 56px; width: 270px; }
+ .report-skeleton-heading span:last-child { background: #e5eee7; border-radius: 99px; height: 31px; width: 156px; }
+ .report-skeleton-metrics, .report-skeleton-layout { display: grid; gap: 13px; grid-template-columns: repeat(4, 1fr); margin-bottom: 24px; }
+ .report-skeleton-layout { grid-template-columns: repeat(2, 1fr); }
+ .report-skeleton-metrics span, .report-skeleton-layout span { animation: report-skeleton-pulse 1.2s ease-in-out infinite; background: #e5eee7; border-radius: 7px; min-height: 130px; }
+ .report-skeleton-layout span { min-height: 260px; }
+ @keyframes report-skeleton-pulse { 50% { opacity: .55; } }
+ @keyframes report-loading-in { from { opacity: 0; } to { opacity: 1; } }
+ @media (max-width: 900px) { .report-skeleton-metrics { grid-template-columns: repeat(2, 1fr); } }
+ @media (max-width: 560px) { .report-skeleton-heading { align-items: flex-start; flex-direction: column; gap: 14px; } .report-skeleton-metrics, .report-skeleton-layout { grid-template-columns: 1fr; } }
 @import "tailwindcss";
 
 :root {
