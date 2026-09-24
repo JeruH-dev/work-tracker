@@ -7,17 +7,57 @@ datasource db {
 }
 
 model User {
-  id                 String              @id @default(cuid())
-  name               String
-  email              String              @unique
-  passwordHash       String
-  emailVerified     Boolean             @default(false)
-  createdAt          DateTime            @default(now())
-  activities         Activity[]
-  projects           Project[]
-  tasks              Task[]
-  verificationTokens VerificationToken[]
+  id                  String               @id @default(cuid())
+  name                String
+  email               String               @unique
+  passwordHash        String
+  emailVerified       Boolean              @default(false)
+  createdAt           DateTime             @default(now())
+  activities          Activity[]
+  projects            Project[]
+  tasks               Task[]
+  settings            UserSettings?
+  verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
+}
+
+model UserSettings {
+  id                         String   @id @default(cuid())
+  userId                     String   @unique
+  theme                      String   @default("system")
+  density                    String   @default("comfortable")
+  textSize                   String   @default("default")
+  reduceMotion               Boolean  @default(false)
+  highContrast               Boolean  @default(false)
+  showStatusLabels           Boolean  @default(false)
+  largerClickTargets         Boolean  @default(false)
+  rememberSidebarState       Boolean  @default(true)
+  emailTaskReminders         Boolean  @default(true)
+  emailTaskAssignments       Boolean  @default(true)
+  emailWeeklySummary         Boolean  @default(false)
+  emailProjectUpdates        Boolean  @default(false)
+  inAppTaskReminders         Boolean  @default(true)
+  inAppDueDateWarnings       Boolean  @default(true)
+  reminderTiming             String   @default("one_day")
+  defaultTaskStatus          String   @default("BACKLOG")
+  defaultPriority            String   @default("MEDIUM")
+  defaultTaskView            String   @default("list")
+  confirmTaskDeletion        Boolean  @default(true)
+  showCompletedTasks         Boolean  @default(true)
+  warnOverdueTasks           Boolean  @default(true)
+  weekStartsOn               String   @default("monday")
+  timeFormat                 String   @default("12")
+  defaultCalendarView        String   @default("month")
+  showWeekends               Boolean  @default(true)
+  showCompletedCalendarTasks Boolean  @default(true)
+  defaultProjectView         String   @default("overview")
+  enableProjectColours       Boolean  @default(true)
+  archiveCompletedProjects   Boolean  @default(true)
+  showProjectProgress        Boolean  @default(true)
+  keepActivityHistory        Boolean  @default(true)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+  user                       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Project {
@@ -55,29 +95,29 @@ model Milestone {
 }
 
 model Task {
-  id          String     @id @default(cuid())
-  taskRef     String     @unique
-  title       String
-  description String?
-  priority    Priority   @default(MEDIUM)
-  status      TaskStatus @default(BACKLOG)
-  dueDate     DateTime?
-  outcome     String?
-  nextAction  String?
-  blocker     String?
-  projectId   String?
-  recurrenceRule RecurrenceRule @default(NONE)
+  id                String           @id @default(cuid())
+  taskRef           String           @unique
+  title             String
+  description       String?
+  priority          Priority         @default(MEDIUM)
+  status            TaskStatus       @default(BACKLOG)
+  dueDate           DateTime?
+  outcome           String?
+  nextAction        String?
+  blocker           String?
+  projectId         String?
+  recurrenceRule    RecurrenceRule   @default(NONE)
   recurrenceEndDate DateTime?
-  assigneeId  String
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  activities  Activity[]
-  timeEntries TimeEntry[]
-  reminders   Reminder[]
-  dependencies TaskDependency[] @relation("TaskDependencies")
-  dependentTasks TaskDependency[] @relation("TaskReverseDependencies")
-  assignee    User       @relation(fields: [assigneeId], references: [id])
-  project     Project?   @relation(fields: [projectId], references: [id])
+  assigneeId        String
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  activities        Activity[]
+  timeEntries       TimeEntry[]
+  reminders         Reminder[]
+  dependencies      TaskDependency[] @relation("TaskDependencies")
+  dependentTasks    TaskDependency[] @relation("TaskReverseDependencies")
+  assignee          User             @relation(fields: [assigneeId], references: [id])
+  project           Project?         @relation(fields: [projectId], references: [id])
 
   @@index([status])
   @@index([dueDate])
@@ -85,25 +125,25 @@ model Task {
 }
 
 model Reminder {
-  id          String   @id @default(cuid())
-  taskId      String
-  message     String
+  id           String    @id @default(cuid())
+  taskId       String
+  message      String
   scheduledFor DateTime
-  sentAt      DateTime?
-  createdAt   DateTime @default(now())
-  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  sentAt       DateTime?
+  createdAt    DateTime  @default(now())
+  task         Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@index([taskId])
   @@index([scheduledFor])
 }
 
 model TaskDependency {
-  id                String   @id @default(cuid())
-  taskId            String
-  dependencyTaskId  String
-  createdAt         DateTime @default(now())
-  task              Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
-  dependencyTask    Task     @relation("TaskReverseDependencies", fields: [dependencyTaskId], references: [id], onDelete: Cascade)
+  id               String   @id @default(cuid())
+  taskId           String
+  dependencyTaskId String
+  createdAt        DateTime @default(now())
+  task             Task     @relation("TaskDependencies", fields: [taskId], references: [id], onDelete: Cascade)
+  dependencyTask   Task     @relation("TaskReverseDependencies", fields: [dependencyTaskId], references: [id], onDelete: Cascade)
 
   @@unique([taskId, dependencyTaskId])
   @@index([taskId])
