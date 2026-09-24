@@ -1,4 +1,5 @@
 import { ProjectMilestones } from "@/components/ProjectMilestones";
+import { CreateProjectForm } from "@/components/CreateProjectForm";
 import { Sidebar } from "@/components/Sidebar";
 import { getCurrentUser } from "@/lib/auth";
 import { listMilestones } from "@/lib/services/milestones";
@@ -32,7 +33,7 @@ export default async function ProjectsPage() {
             <div className="eyebrow">Workspace</div>
             <h2>Projects</h2>
             <div className="date-label">Track the outcomes and milestones that move each project forward.</div>
-          </div>
+          </div><CreateProjectForm />
         </header>
         <ProjectMilestones projects={projectsWithMilestones} />
       </main>

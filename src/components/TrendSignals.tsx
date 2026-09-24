@@ -19,6 +19,8 @@ type TrendSignalsProps = {
   completionRateDelta: number;
 };
 
+type ChartMetric = "completed" | "activity" | "time" | "overdue";
+
 function formatDelta(value: number, suffix = "") {
   if (value === 0) return "No change";
   return `${value > 0 ? "+" : ""}${value}${suffix}`;
@@ -30,10 +32,18 @@ function deltaClass(value: number, positiveWhenLower = false) {
 
 export function TrendSignals(props: TrendSignalsProps) {
   const [view, setView] = useState<"signals" | "chart">("signals");
-  const max = Math.max(props.completedTasks, props.previousCompletedTasks, props.activityCount, props.previousActivities, 1);
+  const [chartMetric, setChartMetric] = useState<ChartMetric>("completed");
+  const chartMetrics: Record<ChartMetric, { label: string; current: number; previous: number; suffix: string; lowerIsBetter?: boolean }> = {
+    completed: { label: "Completed tasks", current: props.completedTasks, previous: props.previousCompletedTasks, suffix: "" },
+    activity: { label: "Activity recorded", current: props.activityCount, previous: props.previousActivities, suffix: "" },
+    time: { label: "Time recorded", current: props.trackedMinutes, previous: props.previousTrackedMinutes, suffix: " min" },
+    overdue: { label: "Overdue tasks", current: props.overdueTasks, previous: props.previousOverdueTasks, suffix: "", lowerIsBetter: true },
+  };
+  const selectedMetric = chartMetrics[chartMetric];
+  const max = Math.max(selectedMetric.current, selectedMetric.previous, 1);
   const chartY = (value: number) => 184 - (value / max) * 140;
-  const currentPoints = `72,${chartY(props.completedTasks)} 448,${chartY(props.activityCount)}`;
-  const previousPoints = `72,${chartY(props.previousCompletedTasks)} 448,${chartY(props.previousActivities)}`;
+  const currentPoints = `72,${chartY(selectedMetric.previous)} 448,${chartY(selectedMetric.current)}`;
+  const previousPoints = `72,${chartY(selectedMetric.previous)} 448,${chartY(selectedMetric.previous)}`;
 
   return (
     <section className="panel report-panel report-trend-panel">
@@ -51,17 +61,19 @@ export function TrendSignals(props: TrendSignalsProps) {
         <div className="report-trend-item"><span>Time recorded</span><strong className={deltaClass(props.trackedMinutesDelta)}>{formatDelta(props.trackedMinutesDelta, " min")}</strong></div>
         <div className="report-trend-item"><span>Overdue tasks</span><strong className={deltaClass(props.overdueTasksDelta, true)}>{formatDelta(props.overdueTasksDelta)}</strong></div>
       </div> : <div className="trend-chart-view">
-        <div className="report-chart-legend"><span><i className="report-chart-key report-chart-key-current" />Current {props.periodLabel.toLowerCase()}</span><span><i className="report-chart-key report-chart-key-previous" />Previous {props.periodLabel.toLowerCase()}</span></div>
+        <div className="trend-chart-controls" role="group" aria-label="Chart metric">
+          {(Object.entries(chartMetrics) as [ChartMetric, typeof selectedMetric][]).map(([value, metric]) => <button className={chartMetric === value ? "is-active" : ""} type="button" aria-pressed={chartMetric === value} onClick={() => setChartMetric(value)} key={value}>{metric.label}</button>)}
+        </div>
+        <div className="report-chart-legend"><span><i className="report-chart-key report-chart-key-current" />Current {props.periodLabel.toLowerCase()}</span><span><i className="report-chart-key report-chart-key-previous" />Previous {props.periodLabel.toLowerCase()}</span><strong className={selectedMetric.lowerIsBetter ? "trend-positive" : ""}>{selectedMetric.current}{selectedMetric.suffix}</strong></div>
         <div className="trend-line-chart">
-          <svg viewBox="0 0 520 220" role="img" aria-label="Line chart comparing completed tasks and activity recorded between the current and previous period">
+          <svg viewBox="0 0 520 220" role="img" aria-label={`Line chart comparing ${selectedMetric.label.toLowerCase()} between the current and previous period`}>
             <line className="trend-axis" x1="52" x2="52" y1="24" y2="190" /><line className="trend-axis" x1="52" x2="482" y1="190" y2="190" />
             <line className="trend-gridline" x1="52" x2="482" y1="48" y2="48" /><line className="trend-gridline" x1="52" x2="482" y1="96" y2="96" /><line className="trend-gridline" x1="52" x2="482" y1="142" y2="142" />
             <polyline className="trend-line trend-line-previous" points={previousPoints} /><polyline className="trend-line trend-line-current" points={currentPoints} />
-            <circle className="trend-point trend-point-previous" cx="72" cy={chartY(props.previousCompletedTasks)} r="4" /><circle className="trend-point trend-point-previous" cx="448" cy={chartY(props.previousActivities)} r="4" />
-            <circle className="trend-point trend-point-current" cx="72" cy={chartY(props.completedTasks)} r="5" /><circle className="trend-point trend-point-current" cx="448" cy={chartY(props.activityCount)} r="5" />
-            <text className="trend-axis-label" x="72" y="211">Completed</text><text className="trend-axis-label" x="448" y="211" textAnchor="end">Activity</text>
+            <circle className="trend-point trend-point-previous" cx="72" cy={chartY(selectedMetric.previous)} r="4" /><circle className="trend-point trend-point-current" cx="448" cy={chartY(selectedMetric.current)} r="5" />
+            <text className="trend-axis-label" x="72" y="211">Previous</text><text className="trend-axis-label" x="448" y="211" textAnchor="end">Current</text>
           </svg>
-          <div className="trend-chart-note">Values are plotted on a shared scale to show movement between the two work signals.</div>
+          <div className="trend-chart-note">{selectedMetric.label}: {selectedMetric.previous}{selectedMetric.suffix} previous, {selectedMetric.current}{selectedMetric.suffix} current.</div>
         </div>
       </div>}
     </section>

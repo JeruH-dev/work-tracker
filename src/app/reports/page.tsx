@@ -73,7 +73,7 @@ export default async function ReportsPage({ searchParams }: ReportsPageProps) {
 
           <section className="panel report-panel">
             <div className="panel-heading"><div><div className="panel-title">Project momentum</div><div className="report-subtitle">Top active projects</div></div></div>
-            {report.projects.length ? <div className="report-project-list">{report.projects.map((project) => <div className="report-project-row" key={project.id}><div className="report-project-heading"><span>{project.name}</span><small>{project.completedTasks}/{project._count.tasks} done</small></div><div className="report-progress-track"><div className="report-progress-bar" style={{ width: `${project._count.tasks ? (project.completedTasks / project._count.tasks) * 100 : 0}%` }} /></div></div>)}</div> : <p className="empty-state">Projects will appear here as you create them.</p>}
+            {report.projects.length ? <div className="report-project-list">{report.projects.map((project) => <div className="report-project-row" key={project.id}><div className="report-project-heading"><span>{project.name}</span><small>{project.completionRate}% complete</small></div><div className="report-progress-track"><div className="report-progress-bar" style={{ width: `${project.completionRate}%` }} /></div><div className="report-project-stats"><span>{project.completedTasks}/{project._count.tasks} done</span><span className={project.blockedTasks ? "project-risk" : ""}>{project.blockedTasks} blocked</span><span className={project.overdueTasks ? "project-risk" : ""}>{project.overdueTasks} overdue</span></div></div>)}</div> : <p className="empty-state">Projects will appear here as you create them.</p>}
           </section>
         </div>
 

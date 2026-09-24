@@ -53,7 +53,7 @@ export async function getWorkReport(userId: string, period: ReportPeriod = "week
     }),
     prisma.project.findMany({
       where: { ownerId: userId },
-      select: { id: true, name: true, _count: { select: { tasks: true } }, tasks: { select: { status: true } } },
+      select: { id: true, name: true, status: true, workstream: true, _count: { select: { tasks: true } }, tasks: { select: { status: true, dueDate: true } } },
       orderBy: { updatedAt: "desc" },
       take: 5,
     }),
@@ -72,6 +72,14 @@ export async function getWorkReport(userId: string, period: ReportPeriod = "week
   }, {});
   const openTasks = tasks.filter((task) => task.status !== "COMPLETED").length;
   const overdueTasks = tasks.filter((task) => task.status !== "COMPLETED" && task.dueDate && task.dueDate < periodEnd).length;
+  const workstreams = projects.reduce<Record<string, { taskCount: number; completedTasks: number; blockedTasks: number }>>((summary, project) => {
+    const entry = summary[project.workstream] ?? { taskCount: 0, completedTasks: 0, blockedTasks: 0 };
+    entry.taskCount += project._count.tasks;
+    entry.completedTasks += project.tasks.filter((task) => task.status === "COMPLETED").length;
+    entry.blockedTasks += project.tasks.filter((task) => task.status === "BLOCKED").length;
+    summary[project.workstream] = entry;
+    return summary;
+  }, {});
 
   return {
     periodStart,
@@ -97,11 +105,15 @@ export async function getWorkReport(userId: string, period: ReportPeriod = "week
       completionRateDelta: tasks.length ? Math.round((completedTasks.length / tasks.length) * 100) - Math.round((previousCompletedTasks / tasks.length) * 100) : 0,
     },
     statusCounts,
+    workstreams,
     completedTasks,
     activities,
     projects: projects.map((project) => ({
       ...project,
       completedTasks: project.tasks.filter((task) => task.status === "COMPLETED").length,
+      blockedTasks: project.tasks.filter((task) => task.status === "BLOCKED").length,
+      overdueTasks: project.tasks.filter((task) => task.status !== "COMPLETED" && task.dueDate && task.dueDate < periodEnd).length,
+      completionRate: project._count.tasks ? Math.round((project.tasks.filter((task) => task.status === "COMPLETED").length / project._count.tasks) * 100) : 0,
     })),
   };
 }
