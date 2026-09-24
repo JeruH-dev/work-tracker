@@ -23,10 +23,10 @@ type Column = { status: Status; label: string; tone: string };
 
 const columns: Column[] = [
   { status: "BACKLOG", label: "Backlog", tone: "neutral" },
-  { status: "IN_PROGRESS", label: "In progress", tone: "green" },
+  { status: "IN_PROGRESS", label: "In progress", tone: "blue" },
   { status: "BLOCKED", label: "Blocked", tone: "red" },
   { status: "IN_REVIEW", label: "In review", tone: "amber" },
-  { status: "COMPLETED", label: "Completed", tone: "blue" },
+  { status: "COMPLETED", label: "Completed", tone: "green" },
 ];
 
 const priorityLabel: Record<Priority, string> = { LOW: "Low", MEDIUM: "Medium", HIGH: "High", URGENT: "Urgent" };
